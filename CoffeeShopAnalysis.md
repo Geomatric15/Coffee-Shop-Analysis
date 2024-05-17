@@ -78,5 +78,44 @@ library(RPostgres) # PostgreSQL Database
  theme_set(theme_fivethirtyeight())
 ```
 
+## Connecting to Database
+```r
+# Credentials 
+warehouse <- config::get('datawarehouse')
+
+# Create connection to database
+con <- dbConnect(RPostgres::Postgres(),
+                 dbname = warehouse$database,
+                 host = warehouse$hostname,
+                 port = warehouse$portid,
+                 user = warehouse$username,
+                 password = warehouse$password)
+```
+
+## Extracting Data
+```r
+# Extracting Data
+data <- dbGetQuery(con, "SELECT * FROM coffee_shop")
+
+# Disconnecting to Database
+dbDisconnect(con)
+```
+Let’s take a quick look of the data
+```r
+##   transaction_id transaction_date transaction_time transaction_qty store_id store_location product_id unit_price   product_category product_type              product_detail
+## 1              1       2023-01-01         07:06:11               2        5    1 Lower Manhattan         32        3.0             Coffee
+## 2              2       2023-01-01         07:08:56               2        5    2 Lower Manhattan         57        3.1                Tea
+## 3              3       2023-01-01         07:14:04               2        5     3 Lower Manhattan         59        4.5 Drinking Chocolate
+## 4              4       2023-01-01         07:20:24               1        5     4 Lower Manhattan         22        2.0             Coffee
+## 5              5       2023-01-01         07:22:41               2        5     5 Lower Manhattan         57        3.1                Tea
+
+##            product_type              product_detail
+## 1 Gourmet brewed coffee                 Ethiopia Rg
+## 2       Brewed Chai tea    Spicy Eye Opener Chai Lg
+## 3         Hot chocolate           Dark chocolate Lg
+## 4           Drip coffee Our Old Time Diner Blend Sm
+## 5       Brewed Chai tea    Spicy Eye Opener Chai Lg
+```
+
 
 
